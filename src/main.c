@@ -23,10 +23,11 @@
 #include "response.h"
 
 int main(int argc, char* argv[]) {
-	
-  // initiate HTTP_Server
-  HTTP_Server http_server;
-  init_server(&http_server, 6969);
 
-  return 0;
+	// default port 80
+	const short port =  getPort(argc, argv);
+	HTTP_Server http_server;
+	init_server(&http_server, port);
+
+	return 0;
 }
