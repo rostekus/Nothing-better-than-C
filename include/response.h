@@ -7,3 +7,4 @@ struct Response {
 
 struct Response createDefaultResponse();
 char* toHTTPString(struct Response* response);
+char * renderStaticFile(char * fileName);
