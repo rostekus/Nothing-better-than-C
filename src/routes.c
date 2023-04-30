@@ -66,5 +66,5 @@ struct Route * search(struct Route * root, char * key) {
     } else if (strcmp(key, root -> key) < 0) {
         return search(root -> left, key);
     }
-
+    return NULL;
 }
