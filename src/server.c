@@ -83,37 +83,30 @@ while (1) {
 
 		Request* request = initRequest(method, urlRoute);
 		printf("processing request:\n uri: %s\n method: %s\n", request-> uri, request->method);
-		
-				char template[100] = "";
-		
-		if (strstr(urlRoute, "/static/") != NULL) {
-			strcat(template, "static/index.css");
-		}else {
-			struct Route * destination = search(http_server-> routes, urlRoute);
-			strcat(template, "templates/");
-
-			if (destination == NULL) {
-				strcat(template, "404.html");
-			}else {
-				strcat(template, destination->value);
-			}
-		}
-
-		// char * response_data = render_static_file(template);
-
-		int content_length = strlen("");
+		char * pageFilepath = handleRequest(http_server->routes, request);
+		char *pageContent = renderStaticFile(pageFilepath);
+		free(pageFilepath);
 		char content_length_str[16];
-		sprintf(content_length_str, "%d", content_length);
-
-		char http_header[4096] = "HTTP/1.1 201 OK\r\n";
-		strcat(http_header, "Content-Length: ");
-		strcat(http_header, content_length_str);
-		strcat(http_header, "\r\n\r\n");
-
-		// Response response = createDefaultResponse();
-
+		struct Response response = {
+        201,
+        "Server: Apache\r\n",
+        "OK",
+        "text/html",
+        "<html><body><h1>Hello, world!</h1></body></html>"
+    };
+		char* http_response = createHTTPResponse(&response);
+		printf("%s\n", http_response);
+		// int content_length = strlen(response_data);
+		// sprintf(content_length_str, "%d", content_length);
+		char http_header[4096] = "";
+		strcat(http_header,http_response);
+		// strcat(http_header, "Content-Length: ");
+		// strcat(http_header, "0");
+		// strcat(http_header, "\r\n\r\n");
+		// strcat(http_header, response_data);
+		// strcat(http_header, "\r\n\r\n");
 		send(client_socket, http_header, sizeof(http_header), 0);
 		close(client_socket);
-		// free(response_data);
+		free(pageContent);
 }
 }
