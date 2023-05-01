@@ -3,45 +3,53 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define RESPONSE_BUFFER_SIZE 4096
 
+char* createHTTPResponse(const struct Response* response) {
+  // Allocate memory for the response buffer
+  char* response_buffer = malloc(RESPONSE_BUFFER_SIZE);
+  if (response_buffer == NULL) {
+    perror("malloc");
+    return NULL;
+  }
 
-struct Response createDefaultResponse() {
-    struct Response response;
-    response.status_code = 200;
-    response.status_message = "OK";
-    response.content_type = "text/plain";
-    response.body = "Hello, world!";
-    return response;
+  // Construct the response string
+  int bytes_written = snprintf(response_buffer, RESPONSE_BUFFER_SIZE,
+                               "HTTP/1.1 %d %s\r\n"
+                               "Content-Type: %s\r\n"
+                               "%s"
+                               "Content-Length: %d"
+                               "\r\n\r\n"
+                               "%s\r\n\r\n",
+                               response->statusCode, response->statusMessage,
+                               response->contentType,
+                               response->headers ? response->headers : "",
+                               (int)strlen(response->body), response->body);
+
+  if (bytes_written < 0 || bytes_written >= RESPONSE_BUFFER_SIZE) {
+    fprintf(stderr, "Failed to create HTTP response\n");
+    free(response_buffer);
+    return NULL;
+  }
+
+  return response_buffer;
 }
 
-char* toHTTPString(struct Response* response) {
-    char* http_string = (char*) malloc(sizeof(char) * 1024); // allocate memory for the HTTP string
-    snprintf(http_string, 1024, "HTTP/1.1 %d %s\r\nContent-Length: %ld\r\n\r\n%s", 
-        response->status_code, response->status_message, strlen(response->body), response->body);
-    return http_string;
-}
+char* renderStaticFile(const char* filename) {
+  char* buffer = NULL;
+  long length;
+  FILE* file = fopen(filename, "rb");
 
-
-char * renderStaticFile(char * fileName) {
-	FILE* file = fopen(fileName, "r");
-
-	if (file == NULL) {
-		return NULL;
-	}else {
-		printf("%s does exist \n", fileName);
-	}
-
-	fseek(file, 0, SEEK_END);
-	long fsize = ftell(file);
-	fseek(file, 0, SEEK_SET);
-
-	char* temp = malloc(sizeof(char) * (fsize+1));
-	char ch;
-	int i = 0;
-	while((ch = fgetc(file)) != EOF) {
-		temp[i] = ch;
-		i++;
-	}
-	fclose(file);
-	return temp;
+  if (file) {
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    buffer = (char*)malloc(length);
+    if (buffer) {
+      fread(buffer, 1, length, file);
+    }
+    fclose(file);
+  }
+  printf("FILE %s\n", buffer);
+  return buffer;
 }

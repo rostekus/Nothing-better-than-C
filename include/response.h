@@ -1,10 +1,10 @@
 struct Response {
-    int status_code;
-    char* status_message;
-    char* content_type;
+    int statusCode;
+    char* headers;
+    char* statusMessage;
+    char* contentType;
     char* body;
 };
 
-struct Response createDefaultResponse();
-char* toHTTPString(struct Response* response);
-char * renderStaticFile(char * fileName);
+char* createHTTPResponse(const struct Response* response);
+char* renderStaticFile(const char *);
