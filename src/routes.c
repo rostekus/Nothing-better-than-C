@@ -8,8 +8,8 @@
 
 // Map implementation using BST
 
-struct Route* initRoute(char* key, char* method, char* filename) {
-  struct Route* temp = (struct Route*)malloc(sizeof(struct Route));
+struct Route *initRoute(char *key, char *method, char *filename) {
+  struct Route *temp = (struct Route *)malloc(sizeof(struct Route));
 
   temp->key = key;
   temp->method = method;
@@ -18,7 +18,7 @@ struct Route* initRoute(char* key, char* method, char* filename) {
   return temp;
 }
 
-void displayRoutes(struct Route* root) {
+void displayRoutes(struct Route *root) {
   if (root != NULL) {
     displayRoutes(root->left);
     printf("%s -> %s \n", root->key, root->method);
@@ -26,8 +26,8 @@ void displayRoutes(struct Route* root) {
   }
 }
 
-struct Route* addRoute(struct Route* root, char* key, char* method,
-                       char* filename) {
+struct Route *addRoute(struct Route *root, char *key, char *method,
+                       char *filename) {
   if (root == NULL) {
     return initRoute(key, method, filename);
   }
@@ -54,7 +54,7 @@ struct Route* addRoute(struct Route* root, char* key, char* method,
   return root;
 }
 
-struct Route* search(struct Route* root, char* key) {
+struct Route *search(struct Route *root, char *key) {
   if (root == NULL) {
     return NULL;
   }
@@ -69,8 +69,8 @@ struct Route* search(struct Route* root, char* key) {
   return NULL;
 }
 
-char* handleRequest(struct Route* root, Request* request) {
-  char* template = (char*)malloc(100 * sizeof(char));
+char *handleRequest(struct Route *root, Request *request) {
+  char *template = (char *)malloc(100 * sizeof(char));
 
   printf("template %s\n", template);
 
@@ -78,7 +78,7 @@ char* handleRequest(struct Route* root, Request* request) {
     strcat(template, "static/index.css");
 
   } else {
-    struct Route* destination = search(root, request->uri);
+    struct Route *destination = search(root, request->uri);
     strcat(template, "templates/");
 
     if (destination == NULL) {
