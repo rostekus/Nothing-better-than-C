@@ -53,7 +53,6 @@ char *renderStaticFile(const char *filename) {
     }
     fclose(file);
   }
-  printf("FILE %s\n", buffer);
   return buffer;
 }
 

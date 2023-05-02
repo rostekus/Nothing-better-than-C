@@ -71,9 +71,8 @@ struct Route *search(struct Route *root, char *key) {
 
 char *handleRequest(struct Route *root, Request *request) {
   char *template = (char *)malloc(100 * sizeof(char));
-
-  printf("template %s\n", template);
-
+  memset(template, 0, 100);
+  strcat(template, "");
   if (strstr(request->uri, "/static/") != NULL) {
     strcat(template, "static/index.css");
 
@@ -84,12 +83,11 @@ char *handleRequest(struct Route *root, Request *request) {
     if (destination == NULL) {
       strcat(template, "404.html");
     }
-    if (strcmp(destination->method, request->method) != 0) {
+    else if (strcmp(destination->method, request->method) != 0) {
       strcat(template, "404.html");
     } else {
       strcat(template, destination->filename);
     }
   }
-  printf("File name: %s\n", template);
   return template;
 }
