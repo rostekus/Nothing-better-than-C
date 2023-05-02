@@ -88,6 +88,7 @@ void serveRoutes(HTTP_Server *http_server) {
     printf("processing request:\n uri: %s\n method: %s\n", request->uri,
            request->method);
     char *pageFilepath = handleRequest(http_server->routes, request);
+    if(pageFilepath == NULL) continue;
     char *pageContent = renderStaticFile(pageFilepath);
     free(pageFilepath);
 
