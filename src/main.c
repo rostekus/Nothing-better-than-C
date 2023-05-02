@@ -22,12 +22,19 @@
 
 #include "response.h"
 
-int main(int argc, char* argv[]) {
+#include "utils.h"
 
-	// default port 80
-	const short port =  getPort(argc, argv);
-	HTTP_Server http_server;
-	init_server(&http_server, port);
+#include "request.h"
 
-	return 0;
+int main(int argc, char *argv[]) {
+
+  // default port 80
+  const short port = getPort(argc, argv);
+  struct Route *route = initRoute("/", "GET", "index.html");
+  addRoute(route, "/about", "GET", "about.html");
+
+  HTTP_Server http_server;
+  initServer(&http_server, port, route);
+  serveRoutes(&http_server);
+  return 0;
 }

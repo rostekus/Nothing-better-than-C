@@ -1,13 +1,16 @@
 #include "response.h"
+
 #include <stdio.h>
+
 #include <string.h>
+
 #include <stdlib.h>
 
 #define RESPONSE_BUFFER_SIZE 4096
 
-char* createHTTPResponse(const struct Response* response) {
+char *createHTTPResponse(const struct Response *response) {
   // Allocate memory for the response buffer
-  char* response_buffer = malloc(RESPONSE_BUFFER_SIZE);
+  char *response_buffer = malloc(RESPONSE_BUFFER_SIZE);
   if (response_buffer == NULL) {
     perror("malloc");
     return NULL;
@@ -35,16 +38,16 @@ char* createHTTPResponse(const struct Response* response) {
   return response_buffer;
 }
 
-char* renderStaticFile(const char* filename) {
-  char* buffer = NULL;
+char *renderStaticFile(const char *filename) {
+  char *buffer = NULL;
   long length;
-  FILE* file = fopen(filename, "rb");
+  FILE *file = fopen(filename, "rb");
 
   if (file) {
     fseek(file, 0, SEEK_END);
     length = ftell(file);
     fseek(file, 0, SEEK_SET);
-    buffer = (char*)malloc(length);
+    buffer = (char *)malloc(length);
     if (buffer) {
       fread(buffer, 1, length, file);
     }
@@ -52,4 +55,19 @@ char* renderStaticFile(const char* filename) {
   }
   printf("FILE %s\n", buffer);
   return buffer;
+}
+
+struct Response initResponse(int statusCode, char *headers, char *statusMessage,
+                             char *contentType, char *body) {
+  struct Response res;
+  res.statusCode = statusCode;
+  res.headers = (char *)malloc(strlen(headers) + 1);
+  strcpy(res.headers, headers);
+  res.statusMessage = (char *)malloc(strlen(statusMessage) + 1);
+  strcpy(res.statusMessage, statusMessage);
+  res.contentType = (char *)malloc(strlen(contentType) + 1);
+  strcpy(res.contentType, contentType);
+  res.body = (char *)malloc(strlen(body) + 1);
+  strcpy(res.body, body);
+  return res;
 }

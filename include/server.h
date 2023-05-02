@@ -3,13 +3,13 @@
 
 #include "routes.h"
 typedef struct HTTP_Server {
-	int socket;
-	int port;
-	struct Routes* routes;	
+  int socket;
+  int port;
+  struct Routes *routes;
 } HTTP_Server;
 
-void initServer(HTTP_Server* http_server, int port, struct Routes* routes);
+void initServer(HTTP_Server *http_server, int port, struct Routes *routes);
 
-void serveRoutes(HTTP_Server* http_server);
+void serveRoutes(HTTP_Server *http_server);
 
 #endif
